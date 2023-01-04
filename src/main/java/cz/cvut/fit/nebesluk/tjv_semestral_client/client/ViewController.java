@@ -1,6 +1,7 @@
-package cz.cvut.fit.nebesluk.semestral.nebesluk_darce.client;
+package cz.cvut.fit.nebesluk.tjv_semestral_client.client;
 
-import cz.cvut.fit.nebesluk.semestral.nebesluk_darce.service.ItemService;
+import cz.cvut.fit.nebesluk.tjv_semestral_client.apiClient.ItemClient;
+import cz.cvut.fit.nebesluk.tjv_semestral_client.service.ItemService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ public class ViewController {
 
     @RequestMapping("/view")
     public String view(Model model, @RequestParam Long id){
-        model.addAttribute("item",itemService.GetItemById(id));
+        model.addAttribute("item",itemService.GetItemDetailed(id));
         return "view";
     }
 }

@@ -6,37 +6,40 @@
 <head>
 </head>
 <body>
+<div>
+<div th:replace="fragments/header :: header"></div>
 <div class="d-flex align-items-center justify-content-center h-100">
-    <div>
+    <div class="border border-success rounded p-3">
         <h1 th:text="${item.getName()}"></h1>
         <p>
             <small>Od:
-                <a class="text-reset" th:href="@{'/user?id='+${item.getAuthor().getId()}}" th:text="${item.getAuthor().getUsername()}"></a>
+                <a class="text-reset" th:href="@{'/user?id='+${item.getAuthorId()}}" th:text="${item.getUsername()}"></a>
             </small> | <small th:text="${item.offer ? 'Nabídka' : 'Poptávka'}" class="text-muted"></small></p>
 
-        <div id="carouselExampleIndicators" style="width: 50rem;height: 30rem" class="carousel slide" data-ride="carousel">
+        <div id="carouselExampleIndicators" style="width: 36rem;height: 30rem" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
-                <li th:each="image,iter : ${item.getImages()}" data-target="#carouselExampleIndicators" th:data-slide-to="${iter.index}" class="active"></li>
+                <li th:each="image,iter : ${item.images}" data-target="#carouselExampleIndicators" th:data-slide-to="${iter.index}" class="active"></li>
             </ol>
             <div class="carousel-inner">
-                <div th:each="image : ${item.images}" class="carousel-item active">
-                    <img class="d-block w-100" th:src="${image != null ? image.getUrl().getPath() : 'http://localhost:8080/no-pictures.png'}" th:alt="${iter.index}">
+                <div th:each="image,iter : ${item.images}" class="carousel-item active">
+                    <img width="36rem" height="450rem" class="d-block w-100" src="#" th:src="${image != null ? image.value : 'http://localhost:8080/no-pictures.png'}" th:alt="${image.key}" alt="#">
                 </div>
             </div>
             <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
+                <span class="sr-only"></span>
             </a>
             <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
+                <span class="sr-only"></span>
             </a>
         </div>
         <div>
-            <a href="#" th:href="@{''}"
+            <a href="#" th:href="@{''}"></a>
         </div>
         <p th:text="${item.getDescription()}"></p>
     </div>
+</div>
 </div>
 </body>
 </html>

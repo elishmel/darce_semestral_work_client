@@ -12,6 +12,8 @@
     }
 </style>
 <body>
+<div>
+    <div th:replace="fragments/header :: header"></div>
     <div class="container">
         <div class="row-2 m-3">
             <div class="col text-center">
@@ -28,11 +30,19 @@
                         <div class="d-flex align-items-center justify-content-center align-middle" style="margin-bottom: 1rem">
                                 <form action="/list" method="get" class="me-auto">
                                     <input type="hidden" name="type" value="search">
-                                    <input type="text" th:value="${searchValue != null ? searchValue :''}" name="term" placeholder="Vyhledat..." id="search" class="border border-success rounded" style="width:16rem;margin-right: 0.75rem;padding-top: 0.25rem;padding-bottom: 0.25rem">
+                                    <input type="text" th:value="${searchValue != null ? searchValue :''}" name="term" placeholder="Vyhledat..." id="search" class="border border-success rounded pb-1" style="width:16rem;margin-right: 0.75rem;padding-top: 0.25rem;padding-bottom: 0.25rem">
                                     <button type="submit" class="btn btn-success">Hledat</button>
                                 </form>
                             <span>
-                                <a href="/list?type=offer" th:class="${type != null && type == 'offer' ? 'btn-outline-success btn mt-2 mb-2 me-2' : ' btn-success btn mt-2 mb-2 me-2' }" style="width: 6rem">Nabídky</a>
+                                <span class="dropdown me-2">
+                                    <button class="btn btn-success dropdown-toggle me-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Značky
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a th:each="tag : ${tags}" class="dropdown-item" href="#" th:href="@{'/list?type=tag&term='+${tag.getTag()}}" th:text="${tag.getTag()}"></a></li>
+                                    </ul>
+                                </span>
+                                <a href="/list?type=offer" th:class="${type != null && type == 'offer' ? 'btn-outline-success btn mt-2 ms-2 mb-2 me-2' : ' btn-success btn mt-2 mb-2 me-2' }" style="width: 6rem">Nabídky</a>
                                 <a href="/list?type=request" th:class="${type != null && type == 'request' ? 'btn-outline-success btn mt-2 mb-2 ms-2' : ' btn-success btn mt-2 mb-2 ms-2' }" style="width: 6rem">Poptávky</a>
                             </span>
                         </div>
@@ -40,11 +50,11 @@
                     <div class="row row-cols-3">
                         <div th:each="item : ${allItems}" class="col" style="margin-bottom: 0.75rem;margin-top: 0.75rem">
                             <div class="card border-dark">
-                                <img src="" class="card-img-top border-bottom border-dark" alt="No image">
+                                <img th:src="${item.image != null ? item.image : 'http://localhost:8081/no-pictures.png'}" class="card-img-top border-bottom border-dark" alt="No image">
                                 <div class="card-body text-dark">
                                     <h4 class="card-title" th:text="${item.name}"></h4>
-                                    <p class="card-text"><small class="text-muted" th:text="${item.offer} ? 'Nabídka' : 'Poptávka'"></small></p>
-                                    <a href="#" th:href="@{'/view?id='+${item.item_id}}" style="width: 13rem" class="btn btn-success">Zobrazit</a>
+                                    <p class="card-text"><small th:text="${item.username} + ' | '"></small><small class="text-muted" th:text="${item.offer} ? 'Nabídka' : 'Poptávka'"></small></p>
+                                    <a href="#" th:href="@{'/view?id='+${item.itemId}}" style="width: 13rem" class="btn btn-success">Zobrazit</a>
                                 </div>
                             </div>
                         </div>
@@ -56,5 +66,6 @@
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>
