@@ -90,6 +90,18 @@ public class ItemService {
         return listings;
     }
 
+    public Collection<ListDto> GetAllTags(String tag){
+        var plainItems = itemClient.getWithTags(tag);
+        Collection<ListDto> listings = new ArrayList<>();
+        for (var item :
+                plainItems) {
+            listings.add(ToListDto(item,
+                    clientClient.GetById(item.getAuthor()).getUsername(),
+                    imageClient.GetById(item.getImages()[0]).getUrl()));
+        }
+        return listings;
+    }
+
     public ViewItemDto GetItemDetailed(Long id){
         ViewItemDto dto = new ViewItemDto();
         itemClient.selectItem(id);

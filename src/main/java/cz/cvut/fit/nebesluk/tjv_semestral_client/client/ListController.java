@@ -36,9 +36,11 @@ public class ListController {
         } else if (type.equals("request")){
             model.addAttribute("allItems",itemService.GetAllRequestListing());
             model.addAttribute("type","request");
-        } else if(type.equals("search") || term != null){
+        } else if(type.equals("search") && term != null){
             model.addAttribute("allItems",itemService.GetTermAllListing(term));
             model.addAttribute("searchValue",term);
+        } else if(type.equals("tag") && term != null){
+            model.addAttribute("allItems",itemService.GetAllTags(term));
         }
         return "list";
     }

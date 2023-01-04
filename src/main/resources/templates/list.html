@@ -13,11 +13,11 @@
 </style>
 <body>
 <div>
-    <div th:replace="fragments/header :: header"></div>
+    <div th:replace="fragments/header :: header(high='list')"></div>
     <div class="container">
         <div class="row-2 m-3">
             <div class="col text-center">
-                <p class="mx-auto fw-bold logo">Dárce</p>
+                <!--<p class="mx-auto fw-bold logo">Dárce</p>-->
             </div>
         </div>
         <div class="row">
@@ -30,7 +30,7 @@
                         <div class="d-flex align-items-center justify-content-center align-middle" style="margin-bottom: 1rem">
                                 <form action="/list" method="get" class="me-auto">
                                     <input type="hidden" name="type" value="search">
-                                    <input type="text" th:value="${searchValue != null ? searchValue :''}" name="term" placeholder="Vyhledat..." id="search" class="border border-success rounded pb-1" style="width:16rem;margin-right: 0.75rem;padding-top: 0.25rem;padding-bottom: 0.25rem">
+                                    <input type="text" th:value="${searchValue != null ? searchValue :''}" name="term" placeholder="Vyhledat..." id="search" class="border border-success rounded pb-1 p-1" style="width:16rem;margin-right: 0.75rem;padding-top: 0.25rem;padding-bottom: 0.25rem">
                                     <button type="submit" class="btn btn-success">Hledat</button>
                                 </form>
                             <span>

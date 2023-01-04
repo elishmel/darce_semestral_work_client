@@ -117,16 +117,8 @@ public class ItemClient {
                 .post(Entity.entity(entity,MediaType.APPLICATION_JSON_TYPE),ItemDto.class);
     }
 
-    public Collection<ItemSmallDto> getWithTags(String[] tags){
-        var tempEndpoint = tagsEndpoint.path("?");
-        for (var tag : tags) {
-            if(!tempEndpoint.getUri().getPath().endsWith("?")){
-                tempEndpoint = tempEndpoint.path("tags="+tag);
-            } else {
-                tempEndpoint = tempEndpoint.path("&tags="+tag);
-            }
-        }
-
+    public Collection<ItemSmallDto> getWithTags(String tag){
+        var tempEndpoint = tagsEndpoint.path("?tags="+tag);
         return Arrays.stream(tempEndpoint.request()
                 .get(ItemSmallDto[].class)).toList();
     }
