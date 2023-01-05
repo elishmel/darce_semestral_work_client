@@ -29,7 +29,7 @@ public class ListController {
         model.addAttribute("tags",tagService.GetAll());
 
         if(type == null){
-            model.addAttribute("allItems",itemService.GetAllListing());
+            model.addAttribute("allItems",itemService.GetAllActive());
         } else if (type.equals("offer")){
             model.addAttribute("allItems",itemService.GetAllOfferListing());
             model.addAttribute("type","offer");

@@ -1,10 +1,13 @@
 package cz.cvut.fit.nebesluk.tjv_semestral_client.apiClient;
 
 import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.image.ImageDto;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.ws.rs.Produces;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -21,6 +24,7 @@ public class ImageClient {
     public ImageClient(@Value("${server.url}")String apiUrl){
         var client = ClientBuilder.newClient();
         imageEndpoint = client.target(apiUrl+"/api/image");
+        imageEndpoint.register(MultiPartFeature.class);
         specificImageEndpointTemplate = imageEndpoint.path("/{id}");
     }
 
@@ -33,8 +37,8 @@ public class ImageClient {
         return Arrays.stream(imageEndpoint.request().get(ImageDto[].class)).toList();
     }
 
-    public ImageDto CreateImage(MultipartFile image){
-        return imageEndpoint.request(MediaType.MULTIPART_FORM_DATA)
-                .post(Entity.entity(image,MediaType.MULTIPART_FORM_DATA),ImageDto.class);
+    public ImageDto CreateImage(FormDataMultiPart image){
+        return imageEndpoint.request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(image,MediaType.MULTIPART_FORM_DATA_TYPE),ImageDto.class);
     }
 }

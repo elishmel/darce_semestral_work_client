@@ -40,12 +40,37 @@ public class ItemService {
         return listDto;
     }
 
+    public Collection<ListDto> GetAllActive(){
+        var plainItems = itemClient.getActive();
+        Collection<ListDto> listings = new ArrayList<>();
+        for (var item :
+                plainItems) {
+
+            listings.add(ToListDto(item,
+                    clientClient.GetById(item.getAuthor()).getUsername(),
+                    imageClient.GetById(item.getImages()[0]).getUrl()));
+        }
+        return listings;
+    }
+
+    public Collection<ListDto> GetAllFromAuthor(Long id){
+        var plainItems = itemClient.getByAuthor(id);
+        Collection<ListDto> listings = new ArrayList<>();
+        for (var item :
+                plainItems) {
+
+            listings.add(ToListDto(item,
+                    clientClient.GetById(item.getAuthor()).getUsername(),
+                    imageClient.GetById(item.getImages()[0]).getUrl()));
+        }
+        return listings;
+    }
+
     public Collection<ListDto> GetAllListing(){
         var plainItems = itemClient.getAll();
         Collection<ListDto> listings = new ArrayList<>();
         for (var item :
                 plainItems) {
-            System.out.println(item.getAuthor());
 
             listings.add(ToListDto(item,
                     clientClient.GetById(item.getAuthor()).getUsername(),

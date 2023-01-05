@@ -7,15 +7,22 @@
 </head>
 <body>
 <div>
-<div th:replace="fragments/header :: header"></div>
+<div th:replace="fragments/header :: header(high='none')"></div>
 <div class="d-flex align-items-center justify-content-center h-100">
     <div class="border border-success rounded p-3">
-        <h1 th:text="${item.getName()}"></h1>
-        <p>
-            <small>Od:
-                <a class="text-reset" th:href="@{'/user?id='+${item.getAuthorId()}}" th:text="${item.getUsername()}"></a>
-            </small> | <small th:text="${item.offer ? 'Nabídka' : 'Poptávka'}" class="text-muted"></small></p>
-
+        <div class="d-flex">
+            <div class="me-auto">
+                <h1 th:text="${item.getName()}"></h1>
+                <p>
+                    <small>Od:
+                        <a class="text-reset" th:href="@{'/user?id='+${item.getAuthorId()}}" th:text="${item.getUsername()}"></a>
+                    </small> | <small th:text="${item.offer ? 'Nabídka' : 'Poptávka'}" class="text-muted"></small>
+                </p>
+            </div>
+            <div th:if="${item.active}">
+                <a href="#" class="btn btn-success" th:text="${item.offer ? 'Vyzvednout' : 'Poskytnout'}">Vyzvednout</a>
+            </div>
+        </div>
         <div id="carouselExampleIndicators" style="width: 35rem;height: 30rem" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
                 <li th:each="image,iter : ${item.images}" data-target="#carouselExampleIndicators" th:data-slide-to="${iter.index}" class="active"></li>

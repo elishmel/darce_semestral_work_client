@@ -28,7 +28,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="d-flex align-items-center justify-content-center align-middle" style="margin-bottom: 1rem">
-                                <form action="/list" method="get" class="me-auto">
+                                <form action="/list" method="get" class="mb-0 me-auto">
                                     <input type="hidden" name="type" value="search">
                                     <input type="text" th:value="${searchValue != null ? searchValue :''}" name="term" placeholder="Vyhledat..." id="search" class="border border-success rounded pb-1 p-1" style="width:16rem;margin-right: 0.75rem;padding-top: 0.25rem;padding-bottom: 0.25rem">
                                     <button type="submit" class="btn btn-success">Hledat</button>
@@ -54,7 +54,7 @@
                                 <div class="card-body text-dark">
                                     <h4 class="card-title" th:text="${item.name}"></h4>
                                     <p class="card-text"><small th:text="${item.username} + ' | '"></small><small class="text-muted" th:text="${item.offer} ? 'Nabídka' : 'Poptávka'"></small></p>
-                                    <a href="#" th:href="@{'/view?id='+${item.itemId}}" style="width: 13rem" class="btn btn-success">Zobrazit</a>
+                                    <a href="#" th:href="@{'/view?id='+${item.itemId}}" style="width: 14rem" class="btn btn-success">Zobrazit</a>
                                 </div>
                             </div>
                         </div>

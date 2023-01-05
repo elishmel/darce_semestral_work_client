@@ -4,12 +4,21 @@
 </head>
 <body>
 <nav class="nav nav-bar border-bottom border-success" style="height: 6rem" th:fragment="header(high)">
-    <div class="m-2" style="align-items: center;display: flex">
-        <img src="http://localhost:8081/logo.svg" style="height: 2.4rem; margin-right: 1rem;border-bottom: 2px black solid; padding: 0.2rem"/>
-        <a href="/home" class=" me-2 text-success" th:class="${#strings.equals(high,'home') ? 'text-decoration-none me-2 text-success fs-5 fw-bold' : 'text-decoration-none me-2 text-success fs-5'}">Domů</a>
-        <a href="/list" class=" me-2 text-success" th:class="${#strings.equals(high,'list') ? 'text-decoration-none me-2 text-success fs-5 fw-bold' : 'me-2 text-decoration-none text-success fs-5'}">Prohlédnout</a>
-        <a href="/new?type=offer" class=" me-2 text-success " th:class="${#strings.equals(high,'newO') ? 'me-2 text-success text-decoration-none fs-5 fw-bold' : 'me-2 text-decoration-none text-success fs-5'}">Nabídnout</a>
-        <a href="/new?type=request" class=" me-2 text-success" th:class="${#strings.equals(high,'newR') ? 'me-2 text-success text-decoration-none fs-5 fw-bold' : 'me-2 text-decoration-none text-success fs-5'}">Poptat</a>
+    <div class="m-2 d-flex w-100" style="align-items: center">
+        <span class="me-auto">
+            <img src="http://localhost:8081/logo.svg" style="height: 2.4rem; margin-right: 1rem; padding: 0.2rem"/>
+            <a href="/home" class=" me-2 text-success" th:class="${#strings.equals(high,'home') ? 'text-decoration-none me-2 text-success fs-5 fw-bold' : 'text-decoration-none me-2 text-success fs-5'}">Domů</a>
+            <a href="/list" class=" me-2 text-success" th:class="${#strings.equals(high,'list') ? 'text-decoration-none me-2 text-success fs-5 fw-bold' : 'me-2 text-decoration-none text-success fs-5'}">Prohlédnout</a>
+            <a href="/new?type=offer" class=" me-2 text-success " th:class="${#strings.equals(high,'newO') ? 'me-2 text-success text-decoration-none fs-5 fw-bold' : 'me-2 text-decoration-none text-success fs-5'}">Nabídnout</a>
+            <a href="/new?type=request" class=" me-2 text-success" th:class="${#strings.equals(high,'newR') ? 'me-2 text-success text-decoration-none fs-5 fw-bold' : 'me-2 text-decoration-none text-success fs-5'}">Poptat</a>
+        </span>
+        <span class="me-2" th:if="${#authorization.expression('!isAuthenticated()')}">
+            <a href="/register"  th:class="${#strings.equals(high,'register') ? 'btn btn-outline-success' : 'btn btn-success'}">Registrovat</a>
+            <a href="/login" th:class="${#strings.equals(high,'login') ? 'btn btn-outline-success' : 'btn btn-success'}">Přihlásit</a>
+        </span>
+        <span class="me-2" th:if="${#authorization.expression('isAuthenticated()')}">
+            <a href="/logout" class="btn btn-success">Odhlásit</a>
+        </span>
     </div>
 </nav>
 </body>

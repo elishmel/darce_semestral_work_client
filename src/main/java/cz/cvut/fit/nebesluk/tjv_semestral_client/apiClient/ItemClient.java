@@ -33,6 +33,8 @@ public class ItemClient {
 
     private WebTarget searchEndpointTemplate;
 
+    private WebTarget activeEndpoint;
+
     public ItemClient(@Value("${server.url}") String apiUrl){
         var client = ClientBuilder.newClient();
         itemsEndpoint = client.target(apiUrl+"/api/item");
@@ -42,6 +44,7 @@ public class ItemClient {
         tagsEndpoint = itemsEndpoint.path("/tags");
         authorEndpointTemplate = itemsEndpoint.path("/author/{authorId}");
         searchEndpointTemplate = itemsEndpoint.path("/all/{term}");
+        activeEndpoint = itemsEndpoint.path("/active");
     }
 
     ////
@@ -90,6 +93,10 @@ public class ItemClient {
     ////
     // Working with all items
     ////
+
+    public Collection<ItemSmallDto> getActive(){
+        return Arrays.stream(activeEndpoint.request().get(ItemSmallDto[].class)).toList();
+    }
 
     public Collection<ItemSmallDto> getAll(){
         return Arrays.stream(itemsEndpoint.request()

@@ -1,0 +1,43 @@
+<html lang="cs">
+<meta charset="UTF-8">
+<title th:text="${'Dárce - ' + user.username}"></title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<head>
+</head>
+<body>
+<div>
+    <div th:replace="fragments/header :: header(high='none')"></div>
+    <div class="d-flex align-items-center justify-content-center h-75">
+        <div class="border border-success rounded p-3">
+            <div class="d-flex border-bottom border-success">
+                <div class="me-auto">
+                    <div>
+                        <img th:src="${user.profilePicture != null ? user.profilePicture : 'http://localhost:8081/no-pictures.png'}" alt="No image" class="rounded-circle border border-success" width="85px" height="85px">
+                        <h1 th:text="${user.realName}"></h1>
+                        <small class="text-muted" th:text="${user.username+' se přidal '+user.dateCreated.dayOfMonth+'. '+user.dateCreated.month.toString().toLowerCase()+' '+user.dateCreated.year}"></small>
+                    </div>
+                </div>
+                <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal().getUsername() == user.username}">
+                    <a href="#" class="btn btn-success">Upravit</a>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row row-cols-3">
+                    <div th:each="item : ${allItems}" class="col" style="margin-bottom: 0.75rem;margin-top: 0.75rem">
+                        <div class="card border-dark" style="max-width: 16rem">
+                            <img th:src="${item.image != null ? item.image : 'http://localhost:8081/no-pictures.png'}" class="card-img-top border-bottom border-dark" alt="No image">
+                            <div class="card-body text-dark">
+                                <h4 class="card-title" th:text="${item.name}"></h4>
+                                <p class="card-text"><small th:text="${item.username} + ' | '"></small><small class="text-muted" th:text="${item.offer} ? 'Nabídka' : 'Poptávka'"></small></p>
+                                <a href="#" th:href="@{'/view?id='+${item.itemId}}" style="width: 8rem" class="btn btn-success">Zobrazit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

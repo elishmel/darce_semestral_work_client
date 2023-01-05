@@ -15,7 +15,7 @@ public class ClientDto {
 
     private LocalDateTime dateLastLogon;
 
-    private URI profilePicture;
+    private String profilePicture;
 
     public Long getClient_id() {
         return client_id;
@@ -57,11 +57,11 @@ public class ClientDto {
         this.dateLastLogon = dateLastLogon;
     }
 
-    public URI getProfilePicture() {
+    public String getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(URI profilePicture) {
+    public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
 }
