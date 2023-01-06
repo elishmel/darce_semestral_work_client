@@ -3,7 +3,10 @@ package cz.cvut.fit.nebesluk.tjv_semestral_client.apiClient;
 import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.item.ItemDto;
 import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.item.ItemSmallDto;
 import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.item.NewItemDto;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Null;
@@ -73,8 +76,15 @@ public class ItemClient {
     }
 
     public ItemDto putItem(NewItemDto entity){
+
         if(selectedItemEndpoint != null){
-            return selectedItemEndpoint.request(MediaType.APPLICATION_JSON_TYPE)
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if(auth instanceof AnonymousAuthenticationToken){
+                throw new RuntimeException("Login is required");
+            }
+            HttpAuthenticationFeature basic = HttpAuthenticationFeature.basic(auth.getName(),auth.getCredentials().toString());
+
+            return selectedItemEndpoint.register(basic).request(MediaType.APPLICATION_JSON_TYPE)
                     .put(Entity.entity(entity,MediaType.APPLICATION_JSON_TYPE),ItemDto.class);
         } else {
             throw new NullPointerException("No item selected");
@@ -83,7 +93,14 @@ public class ItemClient {
 
     public void deleteItem(){
         if(selectedItemEndpoint != null){
-            var response = selectedItemEndpoint.request()
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if(auth instanceof AnonymousAuthenticationToken){
+                throw new RuntimeException("Login is required");
+            }
+            HttpAuthenticationFeature basic = HttpAuthenticationFeature.basic(auth.getName(),auth.getCredentials().toString());
+
+
+            var response = selectedItemEndpoint.register(basic).request()
                     .delete();
 
             if(response.getStatus() != 200){
@@ -99,7 +116,13 @@ public class ItemClient {
     ////
 
     public void provide(Long itemId, Long userId){
-        var result = itemProviderEndpointTemplate.resolveTemplate("itemId",itemId).resolveTemplate("providerId",userId).request().post(Entity.entity(null,MediaType.APPLICATION_JSON_TYPE));
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth instanceof AnonymousAuthenticationToken){
+            throw new RuntimeException("Login is required");
+        }
+        HttpAuthenticationFeature basic = HttpAuthenticationFeature.basic(auth.getName(),auth.getCredentials().toString());
+
+        var result = itemProviderEndpointTemplate.resolveTemplate("itemId",itemId).resolveTemplate("providerId",userId).register(basic).request().post(Entity.entity(null,MediaType.APPLICATION_JSON_TYPE));
 
         if(result.getStatus() != 200){
             throw new RuntimeException(result.getStatusInfo().getReasonPhrase());
@@ -107,7 +130,13 @@ public class ItemClient {
     }
 
     public void receive(Long itemId, Long userId){
-        var result = itemReceiverEndpointTemplate.resolveTemplate("itemId",itemId).resolveTemplate("receiverId",userId).request().post(Entity.entity(null,MediaType.APPLICATION_JSON_TYPE));
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth instanceof AnonymousAuthenticationToken){
+            throw new RuntimeException("Login is required");
+        }
+        HttpAuthenticationFeature basic = HttpAuthenticationFeature.basic(auth.getName(),auth.getCredentials().toString());
+
+        var result = itemReceiverEndpointTemplate.resolveTemplate("itemId",itemId).resolveTemplate("receiverId",userId).register(basic).request().post(Entity.entity(null,MediaType.APPLICATION_JSON_TYPE));
 
         if(result.getStatus() != 200){
             throw new RuntimeException(result.getStatusInfo().getReasonPhrase());

@@ -1,0 +1,53 @@
+<html lang="cs">
+<meta charset="UTF-8">
+<title>Dárce - Nová položka</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<head>
+</head>
+<style>
+</style>
+<body>
+<div>
+    <div th:if="${type.equals('offer')}">
+        <div  th:replace="fragments/header :: header(high='newO')">
+        </div>
+    </div>
+    <div th:if="${type.equals('request')}">
+        <div th:replace="fragments/header :: header(high='newR')" >
+        </div>
+    </div>
+    <div class="d-flex align-items-center justify-content-center h-75">
+        <div class="border border-success rounded p-3 w-50">
+            <h5 th:text="${type.equals('offer') ? 'Nová nabídka' : (type.equals('request') ? 'Nová poptávka' : 'Nová nabídka')}"></h5>
+            <form method="post" action="/createItem" enctype="multipart/form-data">
+                <input type="hidden" name="type" th:value="${type}">
+                <div class="form-floating">
+                    <input type="text" id="name" name="name" placeholder="Název..." class="form-control" required>
+                    <label for="name">Název položky</label>
+                    <small class="form-text text-muted">Pod jakým názvem máme Vaší položku zobrazit.</small>
+                </div><br>
+                <div class="form-floating">
+                    <textarea id="description" style="max-height: 15rem" class="form-control" name="desc" rows="5" maxlength="550" placeholder="Popis..." required></textarea>
+                    <label for="description">Popis položky</label>
+                    <small class="form-text text-muted">Stručný popis Vaší položky.</small>
+                </div><br>
+                <div class="form-floating">
+                    <select name="tag" id="tag" class="form-select" aria-label=".form-select-lf example">
+                        <option selected value="x">Zvolte jednu, nebo žádnou značku</option>
+                        <option th:each="tag : ${allTags}" th:value="${tag.getTag()}" th:text="${tag.getTag()}"></option>
+                    </select>
+                    <label for="tag">Značky:</label>
+                    <small class="form-text text-muted">Značka umožní snadnější vyhledávání.</small>
+                </div><br>
+                <div class="form-floating">
+                    <input name="images" type="file" accept=".png,.jpg,.jpeg,.bmp" multiple size="8" value="Zvolit obrázky"><br>
+                    <small class="form-text text-muted">Můžete zvolit až 8 různých obrázků typu png, jpg, jpeg či bmp.</small>
+                </div><br>
+                <button class="btn btn-success" type="submit">Vytvořit</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

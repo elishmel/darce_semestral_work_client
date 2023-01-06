@@ -35,8 +35,7 @@ public class ClientService {
     }
 
     public boolean Login(String username, String password){
-        var base = Base64.encodeBase64String((username+':'+password).getBytes(Charset.forName("UTF-8")));
-        return clientClient.CheckLogin(base);
+        return clientClient.CheckLogin(username,password);
     }
 
     public void Delete(Long id){

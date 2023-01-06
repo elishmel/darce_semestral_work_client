@@ -38,6 +38,9 @@ public class ImageClient {
     }
 
     public ImageDto CreateImage(FormDataMultiPart image){
+
+
+
         return imageEndpoint.request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(image,MediaType.MULTIPART_FORM_DATA_TYPE),ImageDto.class);
     }
