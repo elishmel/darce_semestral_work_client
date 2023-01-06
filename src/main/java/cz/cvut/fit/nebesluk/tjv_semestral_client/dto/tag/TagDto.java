@@ -11,4 +11,10 @@ public class TagDto {
     public void setTag(String tag) {
         this.tag = tag;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof TagDto)) return false;
+        return tag.equals(((TagDto)obj).getTag());
+    }
 }

@@ -12,9 +12,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 @Component
 public class ItemClient {
@@ -27,7 +25,7 @@ public class ItemClient {
 
     private WebTarget offersEndpoint;
 
-    private WebTarget tagsEndpoint;
+    private WebTarget tagsEndpointTemplate;
 
     private WebTarget authorEndpointTemplate;
 
@@ -35,16 +33,22 @@ public class ItemClient {
 
     private WebTarget activeEndpoint;
 
+    private WebTarget itemReceiverEndpointTemplate;
+
+    private WebTarget itemProviderEndpointTemplate;
+
     public ItemClient(@Value("${server.url}") String apiUrl){
         var client = ClientBuilder.newClient();
         itemsEndpoint = client.target(apiUrl+"/api/item");
         selectedItemEndpointTemplate = itemsEndpoint.path("/{id}");
         requestsEndpoint = itemsEndpoint.path("/request");
         offersEndpoint = itemsEndpoint.path("/offer");
-        tagsEndpoint = itemsEndpoint.path("/tags");
+        tagsEndpointTemplate = itemsEndpoint.path("/tag/{tag}");
         authorEndpointTemplate = itemsEndpoint.path("/author/{authorId}");
         searchEndpointTemplate = itemsEndpoint.path("/all/{term}");
         activeEndpoint = itemsEndpoint.path("/active");
+        itemReceiverEndpointTemplate = itemsEndpoint.path("/{itemId}/request/{receiverId}");
+        itemProviderEndpointTemplate = itemsEndpoint.path("/{itemId}/offer/{providerId}");
     }
 
     ////
@@ -94,50 +98,126 @@ public class ItemClient {
     // Working with all items
     ////
 
+    public void provide(Long itemId, Long userId){
+        var result = itemProviderEndpointTemplate.resolveTemplate("itemId",itemId).resolveTemplate("providerId",userId).request().post(Entity.entity(null,MediaType.APPLICATION_JSON_TYPE));
+
+        if(result.getStatus() != 200){
+            throw new RuntimeException(result.getStatusInfo().getReasonPhrase());
+        }
+    }
+
+    public void receive(Long itemId, Long userId){
+        var result = itemReceiverEndpointTemplate.resolveTemplate("itemId",itemId).resolveTemplate("receiverId",userId).request().post(Entity.entity(null,MediaType.APPLICATION_JSON_TYPE));
+
+        if(result.getStatus() != 200){
+            throw new RuntimeException(result.getStatusInfo().getReasonPhrase());
+        }
+    }
+
     public Collection<ItemSmallDto> getActive(){
-        return Arrays.stream(activeEndpoint.request().get(ItemSmallDto[].class)).toList();
+
+        var result = activeEndpoint.request().get();
+
+        if(result.getStatus() != 200){
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(result.readEntity(ItemSmallDto[].class)).toList();
     }
 
     public Collection<ItemSmallDto> getAll(){
-        return Arrays.stream(itemsEndpoint.request()
-                .get(ItemSmallDto[].class)).toList();
+
+        var result = itemsEndpoint.request()
+                .get();
+
+        if(result.getStatus() != 200){
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(result.readEntity(ItemSmallDto[].class)).toList();
     }
 
     public Collection<ItemSmallDto> getRequests(){
-        return Arrays.stream(requestsEndpoint.request()
-                .get(ItemSmallDto[].class)).toList();
+
+        var result = requestsEndpoint.request()
+                .get();
+
+        if(result.getStatus() != 200){
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(result.readEntity(ItemSmallDto[].class)).toList();
     }
 
-    public ItemDto createRequest(NewItemDto entity){
-        return requestsEndpoint.request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.entity(entity,MediaType.APPLICATION_JSON_TYPE),ItemDto.class);
+    public Optional<ItemDto> createRequest(NewItemDto entity){
+
+        var result = requestsEndpoint.request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(entity,MediaType.APPLICATION_JSON_TYPE));
+
+        if(result.getStatus() != 200){
+            return Optional.empty();
+        }
+
+        return Optional.of(result.readEntity(ItemDto.class));
     }
 
     public Collection<ItemSmallDto> getOffers(){
-        return Arrays.stream(requestsEndpoint.request()
-                .get(ItemSmallDto[].class)).toList();
+
+        var result = offersEndpoint.request()
+                .get();
+
+        if(result.getStatus() != 200){
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(result.readEntity(ItemSmallDto[].class)).toList();
     }
 
-    public ItemDto createOffer(NewItemDto entity){
+    public Optional<ItemDto> createOffer(NewItemDto entity){
         Objects.requireNonNull(entity);
-        return offersEndpoint.request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.entity(entity,MediaType.APPLICATION_JSON_TYPE),ItemDto.class);
+
+        var result = offersEndpoint.request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(entity,MediaType.APPLICATION_JSON_TYPE));
+
+        if(result.getStatus() != 200){
+            return Optional.empty();
+        }
+
+        return Optional.of(result.readEntity(ItemDto.class));
     }
 
     public Collection<ItemSmallDto> getWithTags(String tag){
-        var tempEndpoint = tagsEndpoint.path("?tags="+tag);
-        return Arrays.stream(tempEndpoint.request()
-                .get(ItemSmallDto[].class)).toList();
+        var tempEndpoint = tagsEndpointTemplate.resolveTemplate("tag",tag);
+        var result = tempEndpoint.request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        if(result.getStatus() != 200){
+            return new ArrayList<ItemSmallDto>();
+        }
+
+        return Arrays.stream(
+                result.readEntity(ItemSmallDto[].class)).toList();
     }
 
     public Collection<ItemSmallDto> getByAuthor(Long id){
-        return Arrays.stream(authorEndpointTemplate.resolveTemplate("authorId",id).request()
-                .get(ItemSmallDto[].class)).toList();
+        var result = authorEndpointTemplate.resolveTemplate("authorId",id).request()
+                .get();
+
+        if(result.getStatus() != 200){
+            return new ArrayList<ItemSmallDto>();
+        }
+
+        return Arrays.stream(result.readEntity(ItemSmallDto[].class)).toList();
     }
 
     public Collection<ItemSmallDto> getSearchTerm(String term){
-        return Arrays.stream(searchEndpointTemplate.resolveTemplate("term",term).request()
-                .get(ItemSmallDto[].class)).toList();
+        var result = searchEndpointTemplate.resolveTemplate("term",term).request()
+                .get();
+
+        if(result.getStatus() != 200){
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(result.readEntity(ItemSmallDto[].class)).toList();
     }
 
 }

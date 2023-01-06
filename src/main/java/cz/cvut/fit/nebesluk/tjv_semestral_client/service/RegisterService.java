@@ -12,15 +12,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Component
 public class RegisterService {
 
     ClientService clientService;
 
+    LoginService loginService;
     ImageService imageService;
 
-    public RegisterService(ClientService clientService_,ImageService imageService_){
+    public RegisterService(ClientService clientService_,ImageService imageService_,LoginService loginService_){
         clientService = clientService_;
+        loginService = loginService_;
         imageService = imageService_;
     }
 
@@ -28,7 +32,7 @@ public class RegisterService {
         return clientService.GetByUsername(user).isPresent();
     }
 
-    public String Register(String username, String realname, MultipartFile picture, String password){
+    public String Register(String username, String realname, MultipartFile picture, String password, HttpServletRequest request){
 
         NewClientDto dto = new NewClientDto();
         dto.setUsername(username);
@@ -41,12 +45,7 @@ public class RegisterService {
         }
 
         clientService.Register(dto);
-        if(!clientService.Login(username,password)){
-            throw new RuntimeException("Server error");
-        }
-        Authentication auth =
-                new UsernamePasswordAuthenticationToken(username,password);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        loginService.Login(username,password,request);
         return "home";
     }
 }

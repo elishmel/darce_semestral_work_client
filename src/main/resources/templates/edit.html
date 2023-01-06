@@ -1,0 +1,76 @@
+<html lang="cs">
+<meta charset="UTF-8">
+<title>Dárce - Úprava položky</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<head>
+</head>
+<style>
+</style>
+<body>
+<div>
+    <div  th:replace="fragments/header :: header(high='none')"></div>
+</div>
+    <div class="d-flex align-items-center justify-content-center h-75">
+        <div class="border border-success rounded p-3 w-50">
+            <h5 th:text="${'Úprava položky '+item.getName()}"></h5>
+            <form method="post" action="/edit" enctype="multipart/form-data">
+                <input type="hidden" name="id" th:value="${item.itemId}">
+                <div class="form-floating">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="offer" th:checked="${item.offer}">
+                        <label class="form-check-label" for="inlineRadio1">Nabídka</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="request" th:checked="${!item.offer}">
+                        <label class="form-check-label" for="inlineRadio2">Poptávka</label>
+                    </div>
+                </div><br>
+                <div class="form-floating">
+                    <input type="text" id="name" name="name" placeholder="Název..." class="form-control" th:value="${item.name}" required>
+                    <label for="name">Název položky</label>
+                    <small class="form-text text-muted">Pod jakým názvem máme Vaší položku zobrazit.</small>
+                </div><br>
+                <div class="form-floating">
+                    <textarea id="description" style="max-height: 15rem" class="form-control" name="desc" rows="5" maxlength="550" placeholder="Popis..." th:text="${item.description}" required></textarea>
+                    <label for="description">Popis položky</label>
+                    <small class="form-text text-muted">Stručný popis Vaší položky.</small>
+                </div><br>
+                <div class="form-floating">
+                    <select name="tag" id="tag" class="form-select" aria-label=".form-select-lf example">
+                        <option th:selected="${tags.isEmpty()}" value="x">Zvolte jednu, nebo žádnou značku</option>
+                        <option th:each="tag : ${tags}" th:selected="${item.tags.stream().findFirst().get().equals(tag.getTag())}" th:value="${tag.getTag()}" th:text="${tag.getTag()}"></option>
+                    </select>
+                    <label for="tag">Značky:</label>
+                    <small class="form-text text-muted">Značka umožní snadnější vyhledávání.</small>
+                </div><br>
+                <div class="form-floating">
+                    <input name="images" type="file" accept=".png,.jpg,.jpeg,.bmp" multiple size="8" value="Zvolit obrázky"><br>
+                    <small class="form-text text-muted"><b>Nahráním nových obrázků dojde k odstranění starých.</b><br>Můžete zvolit až 8 různých obrázků typu png, jpg, jpeg či bmp.</small>
+                </div><br>
+                <div th:if="${!item.images.isEmpty()}">
+                    <h6>Vaše obrázky</h6>
+                    <div id="carouselExample" style="width: 35rem;height: 30rem" class="carousel slide" data-bs-ride="carousal">
+                        <div class="carousel-inner">
+                            <div th:each="image,iter : ${item.images}" th:class="${iter.index == 0 ? 'carousel-item active' : 'carousel-item'}" >
+                                <img width="35rem" height="450rem" class="d-block w-100" th:src="${image != null ? image.value : 'http://localhost:8080/no-pictures.png'}" th:alt="${image.key}">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+                <button class="btn btn-success" type="submit">Vytvořit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -7,30 +7,31 @@
 </head>
 <body>
 <div>
-    <div th:replace="fragments/header :: header(high='none')"></div>
-    <div class="d-flex align-items-center justify-content-center h-75">
-        <div class="border border-success rounded p-3">
+    <div th:replace="fragments/header :: header(high='user')"></div>
+    <div class="d-flex align-items-center justify-content-center h-100">
+        <div class="border border-success rounded p-3" style="min-width: 50rem">
             <div class="d-flex border-bottom border-success">
                 <div class="me-auto">
                     <div>
-                        <img th:src="${user.profilePicture != null ? user.profilePicture : 'http://localhost:8081/no-pictures.png'}" alt="No image" class="rounded-circle border border-success" width="85px" height="85px">
+                        <img th:src="${userProfilePicture != null ? userProfilePicture : 'http://localhost:8081/no-pictures.png'}" alt="No image" class="rounded-circle border border-success" width="85px" height="85px">
                         <h1 th:text="${user.realName}"></h1>
                         <small class="text-muted" th:text="${user.username+' se přidal '+user.dateCreated.dayOfMonth+'. '+user.dateCreated.month.toString().toLowerCase()+' '+user.dateCreated.year}"></small>
                     </div>
                 </div>
-                <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal().getUsername() == user.username}">
-                    <a href="#" class="btn btn-success">Upravit</a>
+                <div th:if="${#authentication.getPrincipal() == user.username}">
+                    <a href="/user/edit" class="btn btn-success">Upravit</a>
+                    <a href="/user/delete" class="btn btn-success">Odstranit</a>
                 </div>
             </div>
             <div class="container">
                 <div class="row row-cols-3">
                     <div th:each="item : ${allItems}" class="col" style="margin-bottom: 0.75rem;margin-top: 0.75rem">
-                        <div class="card border-dark" style="max-width: 16rem">
+                        <div class="card border-dark" style="width: 15rem">
                             <img th:src="${item.image != null ? item.image : 'http://localhost:8081/no-pictures.png'}" class="card-img-top border-bottom border-dark" alt="No image">
                             <div class="card-body text-dark">
                                 <h4 class="card-title" th:text="${item.name}"></h4>
                                 <p class="card-text"><small th:text="${item.username} + ' | '"></small><small class="text-muted" th:text="${item.offer} ? 'Nabídka' : 'Poptávka'"></small></p>
-                                <a href="#" th:href="@{'/view?id='+${item.itemId}}" style="width: 8rem" class="btn btn-success">Zobrazit</a>
+                                <a href="#" th:href="@{'/view?id='+${item.itemId}}" style="width: 13rem" class="btn btn-success">Zobrazit</a>
                             </div>
                         </div>
                     </div>

@@ -9,6 +9,16 @@ public class ItemSmallDto {
 
     private Long[] images;
 
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     private boolean offer;
 
     public Long getItemId() {

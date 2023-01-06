@@ -43,11 +43,30 @@ public class ClientClient {
                 .get(ClientDto.class);
     }
 
-    public ClientDto Register(NewClientDto dto){
+    public void Register(NewClientDto dto){
         var result = clientAuthEndpoint.request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(dto,MediaType.APPLICATION_JSON_TYPE));
 
-        return result.readEntity(ClientDto.class);
+    }
+
+    public Optional<ClientDto> putClient(Long id, NewClientDto dto){
+        var res =  specificClientEndpointTemplate.resolveTemplate("id",id).request(MediaType.APPLICATION_JSON_TYPE)
+                .put(Entity.entity(dto,MediaType.APPLICATION_JSON_TYPE));
+
+        if(res.getStatus() != 200){
+            throw new RuntimeException(res.getStatusInfo().getReasonPhrase());
+        }
+
+        return Optional.of(res.readEntity(ClientDto.class));
+    }
+
+    public void deleteClient(Long id){
+        var res = specificClientEndpointTemplate.resolveTemplate("id",id)
+                .request().delete();
+
+        if(res.getStatus() != 200){
+            throw new RuntimeException(res.getStatusInfo().getReasonPhrase());
+        }
     }
 
     public boolean CheckLogin(String baseAuthorization){

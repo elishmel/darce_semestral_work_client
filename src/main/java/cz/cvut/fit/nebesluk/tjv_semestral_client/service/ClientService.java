@@ -26,13 +26,21 @@ public class ClientService {
         return clientClient.GetById(id);
     }
 
-    public ClientDto Register(NewClientDto dto){
-        return clientClient.Register(dto);
+    public Optional<ClientDto> UpdateById(Long id,NewClientDto dto){
+        return clientClient.putClient(id,dto);
+    }
+
+    public void Register(NewClientDto dto){
+        clientClient.Register(dto);
     }
 
     public boolean Login(String username, String password){
         var base = Base64.encodeBase64String((username+':'+password).getBytes(Charset.forName("UTF-8")));
         return clientClient.CheckLogin(base);
+    }
+
+    public void Delete(Long id){
+        clientClient.deleteClient(id);
     }
 
 }

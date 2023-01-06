@@ -20,7 +20,8 @@
     <div class="d-flex align-items-center justify-content-center h-75">
         <div class="border border-success rounded p-3 w-50">
             <h5 th:text="${type.equals('offer') ? 'Nová nabídka' : (type.equals('request') ? 'Nová poptávka' : 'Nová nabídka')}"></h5>
-            <form method="post" action="/createItem">
+            <form method="post" action="/createItem" enctype="multipart/form-data">
+                <input type="hidden" name="type" th:value="${type}">
                 <div class="form-floating">
                     <input type="text" id="name" name="name" placeholder="Název..." class="form-control" required>
                     <label for="name">Název položky</label>
@@ -33,14 +34,14 @@
                 </div><br>
                 <div class="form-floating">
                     <select name="tag" id="tag" class="form-select" aria-label=".form-select-lf example">
-                        <option selected name="">Zvolte jednu, nebo žádnou značku</option>
-                        <option th:each="tag : ${tags}" th:value="tag.getTag()" th:name="tag.getTag()" th:text="tag.getTag()"></option>
+                        <option selected value="x">Zvolte jednu, nebo žádnou značku</option>
+                        <option th:each="tag : ${allTags}" th:value="${tag.getTag()}" th:text="${tag.getTag()}"></option>
                     </select>
                     <label for="tag">Značky:</label>
                     <small class="form-text text-muted">Značka umožní snadnější vyhledávání.</small>
                 </div><br>
                 <div class="form-floating">
-                    <input id="images" type="file" accept=".png,.jpg,.jpeg,.bmp" multiple size="8" value="Zvolit obrázky"><br>
+                    <input name="images" type="file" accept=".png,.jpg,.jpeg,.bmp" multiple size="8" value="Zvolit obrázky"><br>
                     <small class="form-text text-muted">Můžete zvolit až 8 různých obrázků typu png, jpg, jpeg či bmp.</small>
                 </div><br>
                 <button class="btn btn-success" type="submit">Vytvořit</button>

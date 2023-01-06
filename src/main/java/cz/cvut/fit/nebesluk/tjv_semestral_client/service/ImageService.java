@@ -40,13 +40,13 @@ public class ImageService {
             image.transferTo(Paths.get(image.getOriginalFilename()));
             fdmp.bodyPart(new FileDataBodyPart("image",new File(image.getOriginalFilename())));
         } catch (IOException e){
-            throw new RuntimeException("No picture.");
+            return null;
         }
         var r = imageClient.CreateImage(fdmp);
         try{
             Files.delete(Paths.get(image.getOriginalFilename()));
         } catch (IOException e){
-            throw new RuntimeException("Image handling error");
+
         }
         return r;
     }

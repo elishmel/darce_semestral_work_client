@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class RegisterController {
 
@@ -32,13 +34,13 @@ public class RegisterController {
     }
 
     @PostMapping("/registerUser")
-    public String createUser(@RequestParam String user, @RequestParam String name, @RequestParam String pwd, @RequestParam MultipartFile picture, Model model){
+    public String createUser(@RequestParam String user, @RequestParam String name, @RequestParam String pwd, @RequestParam MultipartFile picture, Model model, HttpServletRequest request){
         if(registerService.UserExists(user)){
             model.addAttribute("error",true);
             return "register";
         }
 
-        return registerService.Register(user,name,picture,pwd);
+        return registerService.Register(user,name,picture,pwd,request);
     }
 
 }

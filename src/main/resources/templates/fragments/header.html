@@ -17,6 +17,7 @@
             <a href="/login" th:class="${#strings.equals(high,'login') ? 'btn btn-outline-success' : 'btn btn-success'}">Přihlásit</a>
         </span>
         <span class="me-2" th:if="${#authorization.expression('isAuthenticated()')}">
+            <a href="/user" th:class="${#strings.equals(high,'user') ? 'btn btn-outline-success' : 'btn btn-success'}">Profil</a>
             <a href="/logout" class="btn btn-success">Odhlásit</a>
         </span>
     </div>

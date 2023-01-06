@@ -4,17 +4,13 @@ import cz.cvut.fit.nebesluk.tjv_semestral_client.apiClient.ClientClient;
 import cz.cvut.fit.nebesluk.tjv_semestral_client.apiClient.ImageClient;
 import cz.cvut.fit.nebesluk.tjv_semestral_client.apiClient.ItemClient;
 import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.client.ClientDto;
-import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.item.ItemSmallDto;
-import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.item.ListDto;
-import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.item.ViewItemDto;
+import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.item.*;
 import org.springframework.stereotype.Component;
 
 import javax.swing.text.View;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 @Component
 public class ItemService {
@@ -42,89 +38,76 @@ public class ItemService {
 
     public Collection<ListDto> GetAllActive(){
         var plainItems = itemClient.getActive();
-        Collection<ListDto> listings = new ArrayList<>();
-        for (var item :
-                plainItems) {
+        return getListDtos(plainItems);
+    }
 
-            listings.add(ToListDto(item,
-                    clientClient.GetById(item.getAuthor()).getUsername(),
-                    imageClient.GetById(item.getImages()[0]).getUrl()));
-        }
-        return listings;
+    public Collection<ListDto> GetAll(){
+        var plainItems = itemClient.getAll();
+        return getListDtos(plainItems);
     }
 
     public Collection<ListDto> GetAllFromAuthor(Long id){
         var plainItems = itemClient.getByAuthor(id);
+        return getListDtos(plainItems);
+    }
+
+    public void DeleteById(Long id){
+        itemClient.selectItem(id);
+        itemClient.deleteItem();
+        itemClient.unselectCurrentItem();
+    }
+
+
+    public Optional<ItemDto> UpdateById(Long id,NewItemDto dto){
+        itemClient.selectItem(id);
+        var result = itemClient.putItem(dto);
+        itemClient.unselectCurrentItem();
+        return Optional.of(result);
+    }
+
+    private Collection<ListDto> getListDtos(Collection<ItemSmallDto> plainItems) {
         Collection<ListDto> listings = new ArrayList<>();
         for (var item :
                 plainItems) {
 
             listings.add(ToListDto(item,
                     clientClient.GetById(item.getAuthor()).getUsername(),
-                    imageClient.GetById(item.getImages()[0]).getUrl()));
+                    item.getImages().length > 0 ? imageClient.GetById(item.getImages()[0]).getUrl() : "http://localhost:8081/no-pictures.png"));
         }
         return listings;
     }
 
     public Collection<ListDto> GetAllListing(){
         var plainItems = itemClient.getAll();
-        Collection<ListDto> listings = new ArrayList<>();
-        for (var item :
-                plainItems) {
-
-            listings.add(ToListDto(item,
-                    clientClient.GetById(item.getAuthor()).getUsername(),
-                    imageClient.GetById(item.getImages()[0]).getUrl()));
-        }
-        return listings;
+        return getListDtos(plainItems);
     }
 
     public Collection<ListDto> GetAllRequestListing(){
         var plainItems = itemClient.getRequests();
-        Collection<ListDto> listings = new ArrayList<>();
-        for (var item :
-                plainItems) {
-            listings.add(ToListDto(item,
-                    clientClient.GetById(item.getAuthor()).getUsername(),
-                    imageClient.GetById(item.getImages()[0]).getUrl()));
-        }
-        return listings;
+        return getListDtos(plainItems);
     }
 
     public Collection<ListDto> GetAllOfferListing(){
         var plainItems = itemClient.getOffers();
-        Collection<ListDto> listings = new ArrayList<>();
-        for (var item :
-                plainItems) {
-            listings.add(ToListDto(item,
-                    clientClient.GetById(item.getAuthor()).getUsername(),
-                    imageClient.GetById(item.getImages()[0]).getUrl()));
-        }
-        return listings;
+        return getListDtos(plainItems);
     }
 
     public Collection<ListDto> GetTermAllListing(String term){
         var plainItems = itemClient.getSearchTerm(term);
-        Collection<ListDto> listings = new ArrayList<>();
-        for (var item :
-                plainItems) {
-            listings.add(ToListDto(item,
-                    clientClient.GetById(item.getAuthor()).getUsername(),
-                    imageClient.GetById(item.getImages()[0]).getUrl()));
-        }
-        return listings;
+        return getListDtos(plainItems);
     }
 
     public Collection<ListDto> GetAllTags(String tag){
         var plainItems = itemClient.getWithTags(tag);
-        Collection<ListDto> listings = new ArrayList<>();
-        for (var item :
-                plainItems) {
-            listings.add(ToListDto(item,
-                    clientClient.GetById(item.getAuthor()).getUsername(),
-                    imageClient.GetById(item.getImages()[0]).getUrl()));
-        }
-        return listings;
+        return getListDtos(plainItems);
+    }
+
+    public Optional<ItemDto> CreateOffer(NewItemDto dto){
+        return itemClient.createOffer(dto);
+    }
+
+    public Optional<ItemDto> CreateRequest(NewItemDto dto){
+        return itemClient.createRequest(dto);
     }
 
     public ViewItemDto GetItemDetailed(Long id){
