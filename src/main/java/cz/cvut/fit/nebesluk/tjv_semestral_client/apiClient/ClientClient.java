@@ -2,6 +2,7 @@ package cz.cvut.fit.nebesluk.tjv_semestral_client.apiClient;
 
 import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.client.ClientDto;
 import cz.cvut.fit.nebesluk.tjv_semestral_client.dto.client.NewClientDto;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -88,10 +89,8 @@ public class ClientClient {
     }
 
     public boolean CheckLogin(String username,String password){
-
-        HttpAuthenticationFeature basic = HttpAuthenticationFeature.basic(username,password);
-
-        return clientAuthEndpoint.register(basic).request()
+        var base = Base64.encodeBase64String((username+':'+password).getBytes());
+        return clientAuthEndpoint.request().header("Authorization",base)
                 .get(boolean.class);
     }
 

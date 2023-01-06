@@ -82,7 +82,7 @@ public class ViewController {
     public String editConfirm(Model model,@RequestParam Long id,@RequestParam String type,@RequestParam String name, @RequestParam String desc, @RequestParam(required = false) String tag,@RequestParam List<MultipartFile> images){
         var result = viewService.Edit(id,type,name,desc,tag,images);
         model.addAttribute("item",result);
-        return "view";
+        return "redirect:/view?id="+result.getItemId();
     }
 
     @GetMapping("/delete")
@@ -99,33 +99,33 @@ public class ViewController {
     @RequestMapping("/provide")
     public String provide(Model model,@RequestParam Long id,@RequestParam String username){
         if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken){
-            return "login";
+            return "redirect:/login";
         }
         var tmp = itemService.GetItemDetailed(id);
         if(!tmp.isActive()){
             model.addAttribute("item",tmp);
-            return "view";
+            return "redirect:/view?id="+tmp.getItemId();
         }
 
         viewService.Provide(id);
 
         model.addAttribute("item",itemService.GetItemDetailed(id));
-        return "view";
+        return "redirect:/view?id="+id;
     }
 
     @RequestMapping("/collect")
     public String receive(Model model,@RequestParam Long id,@RequestParam String username){
         if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken){
-            return "login";
+            return "redirect:/login";
         }
         var tmp = itemService.GetItemDetailed(id);
         if(!tmp.isActive()){
             model.addAttribute("item",tmp);
-            return "view";
+            return "redirect:/view?id="+tmp.getItemId();
         }
         viewService.Receive(id);
 
         model.addAttribute("item",itemService.GetItemDetailed(id));
-        return "view";
+        return "redirect:/view?id="+id;
     }
 }

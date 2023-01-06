@@ -27,7 +27,7 @@ public class LoginController {
     @PostMapping("/loginUser")
     public String login(@RequestParam String user, @RequestParam String pwd, HttpServletRequest request, Model model){
         if(loginService.Login(user,pwd,request)){
-            return "home";
+            return "redirect:/home";
         }
         model.addAttribute("error",true);
         return "login";

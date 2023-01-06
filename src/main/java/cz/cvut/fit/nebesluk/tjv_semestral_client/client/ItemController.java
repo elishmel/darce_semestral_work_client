@@ -45,7 +45,7 @@ public class ItemController {
         var context = SecurityContextHolder.getContext();
 
         if( ((Authentication)context.getAuthentication() instanceof AnonymousAuthenticationToken) ){
-            return "login";
+            return "redirect:/login";
 
         }
         model.addAttribute("allTags",tagClient.GetAllTags());
@@ -97,6 +97,6 @@ public class ItemController {
         }
 
         model.addAttribute("item",itemService.GetItemDetailed(target.getItemId()));
-        return "view";
+        return "redirect:/view?id="+target.getItemId();
     }
 }

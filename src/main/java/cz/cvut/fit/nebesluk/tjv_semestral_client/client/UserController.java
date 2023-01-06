@@ -58,7 +58,7 @@ public class UserController {
     public String userEdit(Model model){
 
         if(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken){
-            return "login";
+            return "redirect:/login";
         }
 
         var client = clientService.GetByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElseThrow();
